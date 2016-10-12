@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
+		<title>Document</title>
+		<link rel="stylesheet" type="text/css" href="./css/bootstrap.css" />
+		<script type="text/javascript" src="./js/vue.js"></script>
+		<script type="text/javascript" src="./js/jquery.js"></script>
+		<script type="text/javascript" src="./js/bootstrap.js"></script>
+		<style type="text/css">
+	
+
+			.table-list {
+				display: inline-block;
+			}
+			.table-item { 
+				display: inline-block;
+				padding: 15px 20px;
+				background: #ddd;
+				border-radius: 5px;
+				float: left;
+				margin: 0 10px 10px 0;
+				cursor: pointer;
+			}
+			.table-item p {
+				margin: 0px;
+				font-size: 12px;
+			} 
+			.table-item span { 
+				display: inline-block;
+				width: 50px;
+				text-align: right;
+				color: #777;
+			}
+			.table-item:hover {
+				background: #ccc;
+			} 
+
+		</style>
+	</head>
+	<body>
+		
+		<div class="container">
+			<br/>
+			<div class="user-info">
+				<div class="row">
+					<div class="col-sm-6 col-md-4">
+						<div class="thumbnail">
+							<img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMjQyIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDI0MiAyMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxkZWZzLz48cmVjdCB3aWR0aD0iMjQyIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjkzIiB5PSIxMDAiIHN0eWxlPSJmaWxsOiNBQUFBQUE7Zm9udC13ZWlnaHQ6Ym9sZDtmb250LWZhbWlseTpBcmlhbCwgSGVsdmV0aWNhLCBPcGVuIFNhbnMsIHNhbnMtc2VyaWYsIG1vbm9zcGFjZTtmb250LXNpemU6MTFwdDtkb21pbmFudC1iYXNlbGluZTpjZW50cmFsIj4yNDJ4MjAwPC90ZXh0PjwvZz48L3N2Zz4=" alt="...">
+							<div class="caption">
+								<h3>NACHAO</h3>
+								<ul class="list-inline">
+									<li>
+										<span>score:</span>
+										<span>0</span>
+									</li>
+								</ul>
+								<p>
+									<!-- <a href="#" class="btn btn-primary" role="button">Logout</a> -->
+									<!-- <a href="#" class="btn btn-default" role="button">Button</a> -->
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div>
+				<h3>Table List</h3>
+				<div class="table-list">
+					<div class="table-item" href="#">
+						<p>
+							<span>Name: </span>
+							<b>
+								<i>xxxx table</i>
+							</b>
+						</p>
+						<p>
+							<span>Keys: </span>
+							<b>
+								<i>key</i>,
+								<i>name</i>,
+								<i>icon</i>,
+								<i>number</i>,
+								<i>date</i>,
+								<i>price</i>,
+								<i>sell</i>
+							</b>
+						</p>
+						<p>
+							<span>Used: </span>
+							<b>
+								<i>3(max:1000)</i>
+							</b>
+						</p>
+					</div>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+
+			<div v-if="newTable">
+				<h3>Table create</h3>
+				<div class="table-create">
+					<form class="form" role="form" @submit.prevent="createTableSubmitData" >
+						<div class="form-group">
+							<div class="input-group">
+								<div class="input-group-addon">Table</div>
+								<input class="form-control" type="text" placeholder="table name" v-model="newTable.name">
+							</div>
+						</div>
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Key name</th>
+									<th>Data type</th>
+									<th>Default value</th>
+									<th>Delete</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-if="newTable.keys.length" v-for="item in newTable.keys">
+									<td>
+										<input class="form-control" type="text" v-model="item.key" />
+									</td>
+									<td>
+										<select class="form-control" v-model="item.type">
+											<option value="1">Int</option>
+											<option value="2">Floating</option>
+											<option value="3">String</option>
+										</select>
+									</td>
+									<td>
+										<input class="form-control" type="text" value="" placeholder="null" v-model="item.def" />
+									</td>
+									<td>
+										<a href="javascript:;" @click="createTableDelKey(item)">Del.</a>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										<a href="javascript:;" @click="createTableAddKey">Add a key</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<button type="submit" class="btn btn-default">Confirm</button>
+					</form>
+				</div>
+			</div>
+
+			<div class="table-definition"></div>
+		</div>
+
+		<script type="text/javascript">
+
+			new Vue({
+				el: 'body',
+				data: {
+					url: 'http://127.0.0.2:8080',
+
+					// 新建表数据
+					newTable: null
+				},
+				methods: {
+
+					// 查询表 -----
+
+					// 获取全部当前用户的表
+					getTableList: function () {
+						$.get(this.url+'/table/select', { uid: 1 }, function( res ){
+							console.log(res);
+						});
+					},
+
+					// 创建表 -------------
+					// 创建表初始化
+					createTableInit: function () {
+						this.newTable = {
+							name: '',
+							keys: []
+						};
+						this.createTableAddKey();
+					},
+
+					// 创建表操作 - 添加一个值
+					createTableAddKey: function () {
+						this.newTable.keys.push({
+							key: '',
+							type: 1,
+							def: null
+						});
+					},
+
+					// 创建表操作 - 删除值
+					createTableDelKey: function ( item ) {
+						this.newTable.keys.$remove(item);
+					},
+
+					// 创建表
+					createTableSubmitData: function () {
+						$.get(this.url+'/table/create', { 
+							name: this.newTable.name,
+							keys: JSON.stringify(this.newTable.keys)
+						}, function( res ){
+							console.log(res);
+						});
+					}
+				},
+				ready: function () {
+					this.createTableInit();
+				}
+			});
+
+		</script>
+	</body>
+</html>
